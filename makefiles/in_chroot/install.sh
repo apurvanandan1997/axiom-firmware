@@ -61,29 +61,29 @@ for script in software/scripts/*.py; do ln -sf $(pwd)/$script /usr/axiom/script/
 # TODO: find a better solution for this
 echo 'PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/axiom/bin:/usr/axiom/script' >> /etc/environment
 
-# build and install the control daemon
-(cd software/axiom-control-daemon/
-    [ -d build ] || mkdir -p build
-    cd build
-	cmake --version
-	gcc --version
-	cc --version
-	c++ --version
-	command -v g++
-	command -v c++
-	find ..
-	echo $PATH
-    cmake -G Ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ ..
-    ninja
-    ./install_daemon.sh
-)
+
+# install ctrl (the central control-daemon)
+mkdir /axiom-api/
+if [[ $DEVICE == 'micro' ]]; then
+    ln -s /opt/axiom-software/software/ctrl/camera_descriptions/micro_r2/micro_r2.yml /etc/axiom-yml
+else
+    ln -s /opt/axiom-software/software/ctrl/camera_descriptions/beta/beta.yml /etc/axiom-yml
+fi
+cp software/configs/ctrl.service /etc/systemd/system/
+systemctl enable ctrl
+
+# install the webui
+(cd software/webui; yarn install --production)
+cp software/configs/webui.service /etc/systemd/system/
+systemctl enable webui
+
 
 # configure lighttpd
 cp -f software/configs/lighttpd.conf /etc/lighttpd/lighttpd.conf
 systemctl enable lighttpd
 cp -rf software/http/AXIOM-WebRemote/* /srv/http/
 
-# TODO: build the misc tools from: https://github.com/apertus-open-source-cinema/misc-tools-utilities/tree/master/raw2dng
+# build raw2dng
 cdmake software/misc-tools-utilities/raw2dng
 
 # download prebuilt fpga binaries & select the default binary
@@ -100,11 +100,9 @@ ln -sf /opt/bitstreams/cmv_hdmi3_dual_60.bin /lib/firmware/axiom-fpga-main.bin
 
 cp software/scripts/axiom-start.service /etc/systemd/system/
 if [[ $DEVICE == 'micro' ]]; then
-    systemctl disable axiom
+    systemctl disable axiom-start
 else
-    # TODO(robin): disable for now, as it hangs the camera	
-    # systemctl enable axiom-start
-    true
+    systemctl enable axiom-start
 fi
 
 echo "i2c-dev" > /etc/modules-load.d/i2c-dev.conf

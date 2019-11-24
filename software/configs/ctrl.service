@@ -1,0 +1,9 @@
+[Unit]
+Description=The AXIOM ctrl daemon to expose a fuse api
+
+[Service]
+ExecStart=/usr/axiom/bin/ctrl --mountpoint /axiom-api/ $(realpath /etc/camera_yml)
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

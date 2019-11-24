@@ -31,12 +31,11 @@ dtc
 
 # webserver
 lighttpd
+yarn
 
 # python-stuff
 python-numpy
 
-# control daemon
-clang
 
 # various other packages
 lsof
