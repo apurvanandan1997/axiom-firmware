@@ -1,9 +1,10 @@
-FROM ubuntu:19.04
+FROM ubuntu:rolling
 RUN echo "Europe/Berlin" > /etc/timezone
-RUN apt-get update -q 
+RUN apt-get update -q
 RUN apt-get install tzdata
 RUN dpkg-reconfigure -f noninteractive tzdata
 RUN apt-get install -y -q \
+	curl \
 	wget \ 
 	git \ 
 	e2fsprogs  \ 
@@ -33,6 +34,10 @@ RUN apt-get install -y -q \
 	kmod \
 	liblz4-tool \
     gdb \
-    btrfs-progs
+    btrfs-progs \
+	yarnpkg
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y && $HOME/.cargo/bin/rustup target add armv7-unknown-linux-musleabihf
+RUN curl https://musl.cc/arm-linux-musleabihf-cross.tgz | tar -xvz -C /root
+ENV PATH="/root/.cargo/bin/:/root/arm-linux-musleabihf-cross/bin/:${PATH}"
 COPY qemu-aarch64 /var/lib/binfmts
 COPY qemu-arm /var/lib/binfmts
