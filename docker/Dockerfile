@@ -35,9 +35,12 @@ RUN apt-get install -y -q \
 	liblz4-tool \
     gdb \
     btrfs-progs \
-	yarn
+	gnupg \
+	nodejs \
+	npm
+RUN npm install -g yarn
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y && $HOME/.cargo/bin/rustup target add armv7-unknown-linux-musleabihf
-RUN curl https://musl.cc/arm-linux-musleabihf-cross.tgz | tar -xvz
+RUN curl https://musl.cc/arm-linux-musleabihf-cross.tgz | tar -xvz -C /root/
 ENV PATH="/root/.cargo/bin/:/root/arm-linux-musleabihf-cross/bin/:${PATH}"
 COPY qemu-aarch64 /var/lib/binfmts
 COPY qemu-arm /var/lib/binfmts

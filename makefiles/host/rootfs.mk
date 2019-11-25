@@ -29,7 +29,8 @@ build/root.fs/.base_install: build/$(LINUX_BASE_IMAGE)
 
 build/$(LINUX_BASE_IMAGE):
 	mkdir -p $(@D)
-	wget -c -nv http://archlinuxarm.org/os/$(LINUX_BASE_IMAGE) -O $@
+	# use a fixed mirror because some are verry unstable :(
+	wget -c -nv http://de3.mirror.archlinuxarm.org/os/$(LINUX_BASE_IMAGE) -O $@
 
 
 build/webui/.copy_stamp: $(shell find -type f software/webui/")
@@ -37,7 +38,7 @@ build/webui/.copy_stamp: $(shell find -type f software/webui/")
 	touch $@
 
 build/webui/dist/index.html: build/webui/.copy_stamp
-	cd build/webui/dist; yarn install; yarn build
+	cd build/webui/; yarn install --no-progres; yarn build
 
 
 build/ctrl/.copy_stamp: $(shell find -type f software/ctrl/")
@@ -45,8 +46,9 @@ build/ctrl/.copy_stamp: $(shell find -type f software/ctrl/")
 	touch $@
 
 build/ctrl/target/release/nctrl: build/ctrl/.copy_stamp
+	cd build/ctrl/ && \
 	CROSS_COMPILE=arm-linux-musleabihf- \
 	CFLAGS="-mfpu=neon" \
-	FUSE_CROSS_STATIC_PATH=build/ctrl/thirdparty/ \
+	FUSE_CROSS_STATIC_PATH=/root/axiom-firmware/build/ctrl/thirdparty/ \
 	FUSE_CROSS_STATIC_LIB=fuse \
 	cargo build --release --target=armv7-unknown-linux-musleabihf
