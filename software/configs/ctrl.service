@@ -2,7 +2,7 @@
 Description=The AXIOM ctrl daemon to expose a fuse api
 
 [Service]
-ExecStart=/usr/axiom/bin/ctrl --mountpoint /axiom-api/ $(realpath /etc/camera_yml)
+ExecStart=/usr/axiom/bin/ctrl --mountpoint /axiom-api/ $(realpath /etc/axiom-yml)
 StandardOutput=journal
 
 [Install]
