@@ -12,12 +12,12 @@ sed -i 's/#IgnorePkg   =/IgnorePkg = linux linux-*/' /etc/pacman.conf
 echo 'Server = http://de3.mirror.archlinuxarm.org/$arch/$repo' > /etc/pacman.d/mirrorlist
 pacman-key --init
 pacman-key --populate archlinuxarm
-pacman --noconfirm --needed -Syu
-pacman --noconfirm -R linux-zedboard || true
+pacman --noprogressbar --noconfirm --needed -Syu
+pacman --noprogressbar --noconfirm -R linux-zedboard || true
 
 # install dependencies
-pacman --noconfirm --needed -S $(grep -vE "^\s*#" makefiles/in_chroot/requirements_pacman.txt | tr "\n" " ")
-pip install -r makefiles/in_chroot/requirements_pip.txt
+pacman --noprogressbar --noconfirm --needed -S $(grep -vE "^\s*#" makefiles/in_chroot/requirements_pacman.txt | tr "\n" " ")
+pip install --progress-bar off -r makefiles/in_chroot/requirements_pip.txt
 
 # setup users
 if ! grep "dont log in as root" /root/.profile; then
