@@ -26,7 +26,7 @@ LINUX_PATCHES = $(wildcard patches/linux/*.patch)
 $(LINUX_SOURCE): $(LINUX_PATCHES)
 	@mkdir -p $(@D)
 	rm -rf $@
-	git clone --branch $(LINUX_VERSION) --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git $@
+	git clone -q --branch $(LINUX_VERSION) --depth 1 https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git $@
 
 	./makefiles/host/patch_wrapper.sh $@ $(LINUX_PATCHES)
 	# remove + at end of kernel version (indicates dirty tree)
@@ -54,7 +54,7 @@ U_BOOT_PATCHES = $(wildcard patches/u-boot/*.patch)
 $(UBOOT_SOURCE)/.config: $(U_BOOT_PATCHES)
 	@mkdir -p $(@D)
 	rm -rf $(@D)
-	git clone --branch $(UBOOT_VERSION) --depth 1 https://gitlab.denx.de/u-boot/u-boot.git $(@D)
+	git clone -q --branch $(UBOOT_VERSION) --depth 1 https://gitlab.denx.de/u-boot/u-boot.git $(@D)
 
 	./makefiles/host/patch_wrapper.sh $(@D) $(U_BOOT_PATCHES)
 	# remove -dirty from version

@@ -5,16 +5,9 @@ docker_builder:
     matrix:
       DEVICE: beta
       DEVICE: micro
-  clone_script: |
-    if [[ -z "$CIRRUS_PR" ]]; then
-      git clone --recursive --branch=$CIRRUS_BRANCH https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-    else
-      git clone --recursive https://x-access-token:${CIRRUS_REPO_CLONE_TOKEN}@github.com/${CIRRUS_REPO_FULL_NAME}.git $CIRRUS_WORKING_DIR
-      git fetch origin pull/$CIRRUS_PR/head:pull/$CIRRUS_PR
-    fi;
   make_script: |
     ./makefiles/docker-make.sh DEVICE=$DEVICE
-
+    
     # compress the image
     FILE=axiom-$DEVICE$([ -z $CIRRUS_PR ] || echo "-pr-$CIRRUS_PR")-$(git describe --always --abbrev=8).img.xz
     xz -kT $(nproc) build/axiom-$DEVICE.img

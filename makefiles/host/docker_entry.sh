@@ -2,7 +2,7 @@
 # this script is called from the docker-make.sh script and sets up everything in the 
 # docker container & executes make
 
-if [ -z $COLUMNS ] && [ -z $LINES ]; then
+if [ ! -z $COLUMNS ] && [ ! -z $LINES ]; then
     stty cols "$COLUMNS" rows "$LINES";
 fi
 

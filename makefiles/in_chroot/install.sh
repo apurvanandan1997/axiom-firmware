@@ -80,7 +80,7 @@ systemctl enable ctrl
 # install the webui
 (cd software/webui; yarn install --production)
 unlink /opt/axiom-firmware/software/webui/ctrl_mountpoint
-ls -s /axiom-api/ /opt/axiom-firmware/software/webui/ctrl_mountpoint
+ln -s /axiom-api/ /opt/axiom-firmware/software/webui/ctrl_mountpoint
 cp software/configs/webui.service /etc/systemd/system/
 systemctl enable webui
 
@@ -88,6 +88,14 @@ systemctl enable webui
 # configure lighttpd
 cp -f software/configs/lighttpd.conf /etc/lighttpd/lighttpd.conf
 systemctl enable lighttpd
+
+# configure NetworkManager
+cp -f software/configs/Hotspot.nmconnection /etc/NetworkManager/system-connections/
+chmod 600 /etc/NetworkManager/system-connections/Hotspot.nmconnection
+cp -f software/configs/iptables.sh /etc/NetworkManager/dispatcher.d/
+chmod 700 /etc/NetworkManager/dispatcher.d/iptables.sh
+cp -f software/configs/dnsmasq-shared-hosts.conf /etc/NetworkManager/dnsmasq-shared.d/hosts.conf
+systemctl enable NetworkManager
 
 # build raw2dng
 cdmake software/misc-tools-utilities/raw2dng

@@ -40,7 +40,7 @@ build/webui/.copy_stamp: $(shell find -type f software/webui/")
 	touch $@
 
 build/webui/dist/index.html: build/webui/.copy_stamp
-	cd build/webui; yarnpkg install --no-progres; yarnpkg build
+	cd build/webui; yarnpkg install --no-progress; yarnpkg build
 
 
 build/ctrl/.copy_stamp: $(shell find -type f software/ctrl/")
