@@ -5,8 +5,10 @@ LINUX_BASE_IMAGE=ArchLinuxARM-zedboard-latest.tar.gz
 build/root.fs/.install_stamp: $(shell find makefiles/in_chroot/) build/root.fs/opt/axiom-firmware/.install_stamp $(LINUX_SOURCE)/arch/arm/boot/zImage build/root.fs/.base_install build/webui/dist/index.html build/ctrl/target/release/nctrl
 	rsync -aK build/kernel_modules.fs/ $(@D)
 
-	cp -r build/webui/dist build/root.fs/opt/axiom-firmware/software/webui
-	cp build/ctrl/target/release/nctrl /usr/axiom/bin/ctrl
+	cp -r build/webui/dist $(@D)/opt/axiom-firmware/software/webui
+
+	mkdir -p $(@D)/usr/axiom/bin
+	cp build/ctrl/target/armv7-unknown-linux-musleabihf/release/nctrl $(@D)/usr/axiom/bin/ctrl
 
 	echo "$(DEVICE)" > $(@D)/etc/hostname
 	+./makefiles/host/run_in_chroot.sh /opt/axiom-firmware/makefiles/in_chroot/install.sh 
@@ -38,17 +40,19 @@ build/webui/.copy_stamp: $(shell find -type f software/webui/")
 	touch $@
 
 build/webui/dist/index.html: build/webui/.copy_stamp
-	cd build/webui/; yarn install --no-progres; yarn build
+	cd build/webui; yarnpkg install --no-progres; yarnpkg build
 
 
 build/ctrl/.copy_stamp: $(shell find -type f software/ctrl/")
 	cp -r software/ctrl build/
+	mkdir -p build/ctrl/.cargo
+	echo -e "[target.armv7-unknown-linux-musleabihf]\n linker = \"arm-linux-musleabihf-gcc\"" > build/ctrl/.cargo/config
 	touch $@
 
 build/ctrl/target/release/nctrl: build/ctrl/.copy_stamp
-	cd build/ctrl/ && \
+	cd build/ctrl && \
 	CROSS_COMPILE=arm-linux-musleabihf- \
 	CFLAGS="-mfpu=neon" \
-	FUSE_CROSS_STATIC_PATH=/root/axiom-firmware/build/ctrl/thirdparty/ \
+	FUSE_CROSS_STATIC_PATH=./thirdparty/ \
 	FUSE_CROSS_STATIC_LIB=fuse \
 	cargo build --release --target=armv7-unknown-linux-musleabihf

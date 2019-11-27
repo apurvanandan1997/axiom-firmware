@@ -65,11 +65,14 @@ echo 'PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/axiom/bin:/usr/axiom/script' >> /e
 
 
 # install ctrl (the central control-daemon)
-mkdir /axiom-api/
+mkdir -p /axiom-api/
+if [ -f /etc/axiom-yml ]; then
+    unlink /etc/axiom-yml
+fi
 if [[ $DEVICE == 'micro' ]]; then
-    ln -s /opt/axiom-software/software/ctrl/camera_descriptions/micro_r2/micro_r2.yml /etc/axiom-yml
+    ln -s /opt/axiom-firmware/software/ctrl/camera_descriptions/micro_r2/micro_r2.yml /etc/axiom-yml
 else
-    ln -s /opt/axiom-software/software/ctrl/camera_descriptions/beta/beta.yml /etc/axiom-yml
+    ln -s /opt/axiom-firmware/software/ctrl/camera_descriptions/beta/beta.yml /etc/axiom-yml
 fi
 cp software/configs/ctrl.service /etc/systemd/system/
 systemctl enable ctrl
@@ -83,7 +86,6 @@ systemctl enable webui
 # configure lighttpd
 cp -f software/configs/lighttpd.conf /etc/lighttpd/lighttpd.conf
 systemctl enable lighttpd
-cp -rf software/http/AXIOM-WebRemote/* /srv/http/
 
 # build raw2dng
 cdmake software/misc-tools-utilities/raw2dng

@@ -21,6 +21,8 @@ dcraw
 imagemagick
 # control daemon uses ninja now
 ninja
+# new control daemon uses fuse
+fuse
 
 # convenience tools
 vim
