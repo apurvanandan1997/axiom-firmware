@@ -79,6 +79,8 @@ systemctl enable ctrl
 
 # install the webui
 (cd software/webui; yarn install --production)
+unlink /opt/axiom-firmware/software/webui/ctrl_mountpoint
+ls -s /axiom-api/ /opt/axiom-firmware/software/webui/ctrl_mountpoint
 cp software/configs/webui.service /etc/systemd/system/
 systemctl enable webui
 
