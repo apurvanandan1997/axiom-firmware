@@ -106,7 +106,7 @@ mkdir -p /opt/bitstreams/
 BITSTREAMS="BETA/cmv_hdmi3_dual_60.bit BETA/cmv_hdmi3_dual_30.bit BETA/ICSP/icsp.bit check_pin10.bit check_pin20.bit"
 for bit in $BITSTREAMS; do
     NAME=$(basename $bit)
-    (cd /opt/bitstreams && wget http://vserver.13thfloor.at/Stuff/AXIOM/$bit -O $NAME)
+    (cd /opt/bitstreams && wget --no-verbose http://vserver.13thfloor.at/Stuff/AXIOM/$bit -O $NAME)
     ./makefiles/in_chroot/to_raw_bitstream.py -f /opt/bitstreams/$NAME /opt/bitstreams/"$(basename ${NAME%.bit}).bin"
     ln -sf /opt/bitstreams/"${NAME%.bit}.bin" /lib/firmware
 done
