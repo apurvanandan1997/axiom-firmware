@@ -3,7 +3,7 @@
 	url = https://github.com/apertus-open-source-cinema/misc-tools-utilities.git
 	branch = master
 [submodule "software/nctrl"]
-	path = software/ctrl
+	path = software/nctrl
 	url = https://github.com/axiom-micro/nctrl
 [submodule "software/webui"]
 	path = software/webui

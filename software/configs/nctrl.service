@@ -1,0 +1,9 @@
+[Unit]
+Description=The AXIOM nctrl daemon to expose a fuse api
+
+[Service]
+ExecStart=/usr/axiom/bin/nctrl --mountpoint /axiom-api/ $(realpath /etc/axiom-yml)
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

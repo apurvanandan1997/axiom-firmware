@@ -2,13 +2,13 @@ include bootfs.mk
 
 LINUX_BASE_IMAGE=ArchLinuxARM-zedboard-latest.tar.gz
 
-build/root.fs/.install_stamp: $(shell find makefiles/in_chroot/) build/root.fs/opt/axiom-firmware/.install_stamp $(LINUX_SOURCE)/arch/arm/boot/zImage build/root.fs/.base_install build/webui/dist/index.html build/ctrl/target/release/nctrl
+build/root.fs/.install_stamp: $(shell find makefiles/in_chroot/) build/root.fs/opt/axiom-firmware/.install_stamp $(LINUX_SOURCE)/arch/arm/boot/zImage build/root.fs/.base_install build/webui/dist/index.html build/nctrl/target/release/nctrl
 	rsync -aK build/kernel_modules.fs/ $(@D)
 
 	cp -r build/webui/dist $(@D)/opt/axiom-firmware/software/webui
 
 	mkdir -p $(@D)/usr/axiom/bin
-	cp build/ctrl/target/armv7-unknown-linux-musleabihf/release/nctrl $(@D)/usr/axiom/bin/ctrl
+	cp build/nctrl/target/armv7-unknown-linux-musleabihf/release/nctrl $(@D)/usr/axiom/bin/nctrl
 
 	echo "$(DEVICE)" > $(@D)/etc/hostname
 	+./makefiles/host/run_in_chroot.sh /opt/axiom-firmware/makefiles/in_chroot/install.sh 
@@ -43,14 +43,14 @@ build/webui/dist/index.html: build/webui/.copy_stamp
 	cd build/webui; yarnpkg install --no-progress; yarnpkg build
 
 
-build/ctrl/.copy_stamp: $(shell find -type f software/ctrl/")
-	cp -r software/ctrl build/
-	mkdir -p build/ctrl/.cargo
-	echo -e "[target.armv7-unknown-linux-musleabihf]\n linker = \"arm-linux-musleabihf-gcc\"" > build/ctrl/.cargo/config
+build/nctrl/.copy_stamp: $(shell find -type f software/nctrl/")
+	cp -r software/nctrl build/
+	mkdir -p build/nctrl/.cargo
+	echo -e "[target.armv7-unknown-linux-musleabihf]\n linker = \"arm-linux-musleabihf-gcc\"" > build/nctrl/.cargo/config
 	touch $@
 
-build/ctrl/target/release/nctrl: build/ctrl/.copy_stamp
-	cd build/ctrl && \
+build/nctrl/target/release/nctrl: build/nctrl/.copy_stamp
+	cd build/nctrl && \
 	CROSS_COMPILE=arm-linux-musleabihf- \
 	CFLAGS="-mfpu=neon" \
 	FUSE_CROSS_STATIC_PATH=./thirdparty/ \
