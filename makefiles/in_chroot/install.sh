@@ -79,8 +79,9 @@ systemctl enable nctrl
 
 # install the webui
 (cd software/webui; yarn install --production)
-unlink /opt/axiom-firmware/software/webui/nctrl_mountpoint
-ln -s /axiom-api/ /opt/axiom-firmware/software/webui/nctrl_mountpoint
+NCTRL_MOUNTPOINT=/opt/axiom-firmware/software/webui/nctrl_mountpoint
+[ -f $NCTRL_MOUNTPOINT ] && unlink $NCTRL_MOUNTPOINT
+ln -s /axiom-api/ $NCTRL_MOUNTPOINT
 cp software/configs/webui.service /etc/systemd/system/
 systemctl enable webui
 
