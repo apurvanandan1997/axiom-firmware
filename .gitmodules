@@ -4,7 +4,7 @@
 	branch = master
 [submodule "software/nctrl"]
 	path = software/nctrl
-	url = https://github.com/axiom-micro/nctrl
+	url = https://github.com/apertus-open-source-cinema/nctrl
 [submodule "software/webui"]
 	path = software/webui
-	url = https://github.com/axiom-micro/webui
+	url = https://github.com/apertus-open-source-cinema/webui
