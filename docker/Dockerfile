@@ -37,7 +37,7 @@ RUN apt-get install -y -q \
     btrfs-progs \
 	yarnpkg
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y && $HOME/.cargo/bin/rustup target add armv7-unknown-linux-musleabihf
-RUN curl https://musl.cc/arm-linux-musleabihf-cross.tgz | tar -xvz -C /root
-ENV PATH="/root/.cargo/bin/:/root/arm-linux-musleabihf-cross/bin/:${PATH}"
+RUN curl https://toolchains.bootlin.com/downloads/releases/toolchains/armv7-eabihf/tarballs/armv7-eabihf--musl--bleeding-edge-2020.02-2.tar.bz2 | tar -xvj -C /root
+ENV PATH="/root/.cargo/bin/:/root/armv7-eabihf--musl--bleeding-edge-2020.02-2/bin/:${PATH}"
 COPY qemu-aarch64 /var/lib/binfmts
 COPY qemu-arm /var/lib/binfmts

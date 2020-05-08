@@ -46,12 +46,12 @@ build/webui/dist/index.html: build/webui/.copy_stamp
 build/nctrl/.copy_stamp: $(shell find -type f software/nctrl/")
 	cp -r software/nctrl build/
 	mkdir -p build/nctrl/.cargo
-	echo -e "[target.armv7-unknown-linux-musleabihf]\n linker = \"arm-linux-musleabihf-gcc\"" > build/nctrl/.cargo/config
+	echo -e "[target.armv7-unknown-linux-musleabihf]\n linker = \"arm-buildroot-linux-musleabihf-gcc\"" > build/nctrl/.cargo/config
 	touch $@
 
 build/nctrl/target/release/nctrl: build/nctrl/.copy_stamp
 	cd build/nctrl && \
-	CROSS_COMPILE=arm-linux-musleabihf- \
+	CROSS_COMPILE=arm-buildroot-linux-musleabihf- \
 	CFLAGS="-mfpu=neon" \
 	FUSE_CROSS_STATIC_PATH=./thirdparty/ \
 	FUSE_CROSS_STATIC_LIB=fuse \
