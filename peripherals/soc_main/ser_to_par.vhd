@@ -1,17 +1,3 @@
-----------------------------------------------------------------------------
---  ser_to_par.vhd (for cmv_io2)
---	N-Channel Deserializer Unit
---	Version 1.0
---
---  Copyright (C) 2013 H.Poetzl
---
---	This program is free software: you can redistribute it and/or
---	modify it under the terms of the GNU General Public License
---	as published by the Free Software Foundation, either version
---	2 of the License, or (at your option) any later version.
-----------------------------------------------------------------------------
-
-
 library IEEE;
 use IEEE.std_logic_1164.ALL;
 
@@ -35,6 +21,7 @@ end par_array_pkg;
 library IEEE;
 use IEEE.std_logic_1164.ALL;
 use IEEE.numeric_std.ALL;
+use IEEE.std_logic_unsigned.ALL;
 
 library unisim;
 use unisim.VCOMPONENTS.ALL;
@@ -62,7 +49,9 @@ entity ser_to_par is
 	par_enable	: out  std_logic;
 	par_data	: out par12_a (CHANNELS - 1 downto 0);
 	--
-	bitslip		: in  std_logic_vector (CHANNELS - 1 downto 0)
+	bitslip		: in  std_logic_vector (CHANNELS - 1 downto 0);
+	count_enable    : in std_logic
+	
     );
 
 end entity ser_to_par;
@@ -71,36 +60,72 @@ end entity ser_to_par;
 architecture RTL of ser_to_par is
 
     attribute KEEP_HIERARCHY of RTL : architecture is "TRUE";
-
+    signal test           : par12_a(CHANNELS-1 downto 0);
+    signal counter        : std_logic_vector(11 downto 0);
+    signal ctrl_in        : std_logic_vector(11 downto 0);
+    constant testpattern1 : std_logic_vector(11 downto 0):="111111111111";
+    constant testpattern2 : std_logic_vector(11 downto 0):="111100000000";
+    constant testpattern3 : std_logic_vector(11 downto 0) :="111000000000";
+    signal fval_count     : std_logic_vector(5 downto 0) :=(others => '0');
+    
 begin
 
-    GEN_serdes : for I in CHANNELS - 1 downto 0 generate
-	serdes_inst : entity work.cmv_serdes
-	    port map (
-		serdes_clk    => serdes_clk,
-		serdes_clkdiv => serdes_clkdiv,
-		serdes_phase  => serdes_phase,
-		serdes_rst    => serdes_rst,
-		--
-		ser_data      => ser_data(I),
-		par_data      => par_data(I),
-		--
-		bitslip       => bitslip(I) );
 
+counter_proc: process(serdes_clkdiv)
+begin
+	if rising_edge(serdes_clkdiv) then
+	   if count_enable ='1' then
+	       if counter = "000011111111" then
+                    counter <= testpattern1;
+		    ctrl_in<= "000000000100";
+		    fval_count<=fval_count+1;
+						  
+		elsif counter= testpattern1 then
+		    counter <= (others => '0');
+		    ctrl_in <="000000000111";
+							
+		elsif counter=  "000001111111" then 
+		    counter <= testpattern2;
+		    ctrl_in<="000000000110";
+							
+		elsif counter= testpattern2 then
+		    counter <= "000010000000" ;
+		    ctrl_in <="000000000111";
+							
+		elsif fval_count="100000" then
+		    counter<= testpattern3;
+		    ctrl_in<="000000000000";
+				
+                else
+                    counter <= counter + 1;
+		    ctrl_in<="000000000111";
+
+               end if;   
+           end if;
+        end if;
+ end process;
+----------------------------------------------------------------------
+--assigning fake data (test) to par_data 
+----------------------------------------------------------------------
+
+GEN_PAT: for I in CHANNELS - 2 downto 0 generate
+    test(I)<=counter;
     end generate;
-
-    push_proc : process (par_clk)
-	variable phase_d_v : std_logic;
-    begin
-	if rising_edge(par_clk) then
-	    if phase_d_v = '1' and serdes_phase = '0' then
-		par_enable <= '1';
-	    else
-		par_enable <= '0';
+    
+    test(CHANNELS-1) <= ctrl_in;
+    par_data<=test;
+    
+       
+proc: process(serdes_clk, serdes_clkdiv)
+	 begin
+	    if rising_edge(serdes_clkdiv) then
+	        par_enable <='1';
 	    end if;
 
-	    phase_d_v := serdes_phase;
-	end if;
-    end process;
-
+	    if falling_edge(serdes_clk) then
+		par_enable<='0';
+	    end if;
+	end process;
+			
 end RTL;
+

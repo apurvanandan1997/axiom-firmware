@@ -59,8 +59,8 @@ entity top is
 	cmv_t_exp1 : out std_ulogic;
 	cmv_t_exp2 : out std_ulogic;
 	--
-	cmv_lvds_clk_p : out std_logic;
-	cmv_lvds_clk_n : out std_logic;
+	--cmv_lvds_clk_p : out std_logic;
+	--cmv_lvds_clk_n : out std_logic;
 	--
 	cmv_lvds_outclk_p : in std_logic;
 	cmv_lvds_outclk_n : in std_logic;
@@ -381,6 +381,7 @@ architecture RTL of top is
     alias oreg_wswitch : std_logic is reg_oreg(11)(7);
 
     alias serdes_reset : std_logic is reg_oreg(11)(8);
+    alias count_enable : std_logic is reg_oreg(11)(9);
 
     alias wbuf_enable : std_logic_vector (3 downto 0)
 	is reg_oreg(11)(15 downto 12);
@@ -1262,7 +1263,7 @@ begin
 
     lvds_pll_inst : entity work.lvds_pll (RTL_250MHZ)
 	port map (
-	    ref_clk_in => cmv_outclk,
+	    ref_clk_in => cmv_lvds_clk,
 	    --
 	    pll_locked => lvds_pll_locked,
 	    --
@@ -1413,7 +1414,7 @@ begin
     -- Delay Register File
     --------------------------------------------------------------------
 
-    reg_delay_inst : entity work.reg_delay
+  /*  reg_delay_inst : entity work.reg_delay
 	generic map (
 	    REG_BASE => 16#60000000#,
 	    CHANNELS => CHANNELS + 2 )
@@ -1433,7 +1434,7 @@ begin
 	    --
 	    match => par_match,			-- in
 	    mismatch => par_mismatch,		-- in
-	    bitslip => serdes_bitslip );	-- out
+	    bitslip => serdes_bitslip );	*/-- out
 
     --------------------------------------------------------------------
     -- BRAM LUT Register File (Linearization)
@@ -1479,7 +1480,7 @@ begin
     -- LVDS Input and Deserializer
     --------------------------------------------------------------------
 
-    OBUFDS_inst : OBUFDS
+  /*  OBUFDS_inst : OBUFDS
 	generic map (
 	    IOSTANDARD => "LVDS_25",
 	    SLEW => "SLOW" )
@@ -1543,9 +1544,8 @@ begin
     idelay_in(17 downto 0) <= idelay_in_p(17 downto 0);
     idelay_in(18) <= idelay_in_n(18);
     idelay_in(CHANNELS downto 19) <= idelay_in_p(CHANNELS downto 19);
-    idelay_in(CHANNELS + 1) <= idelay_in_n(CHANNELS + 1);
-
-    cmv_outclk <= not idelay_out(CHANNELS + 1);
+    idelay_in(CHANNELS + 1) <= not(cmv_lvds_clk);
+    cmv_outclk <= not idelay_out(CHANNELS + 1); */
 
     ser_to_par_inst : entity work.ser_to_par
 	generic map (
@@ -1561,6 +1561,7 @@ begin
 	    par_clk	  => serdes_clk,	-- in
 	    par_enable	  => par_enable,	-- out
 	    par_data	  => par_data,		-- out
+            count_enable  => count_enable,   --in
 	    --
 	    bitslip	  => serdes_bitslip(CHANNELS downto 0) );
 

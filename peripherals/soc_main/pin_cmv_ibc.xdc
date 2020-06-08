@@ -31,8 +31,8 @@ set_property PACKAGE_PIN U13 [get_ports cmv_sys_res_n]
 set_property IOSTANDARD LVCMOS25 [get_ports cmv_*]
 
 
-set_property PACKAGE_PIN P18 [get_ports cmv_lvds_clk_n]
-set_property PACKAGE_PIN N17 [get_ports cmv_lvds_clk_p]
+#set_property PACKAGE_PIN P18 [get_ports cmv_lvds_clk_n]
+#set_property PACKAGE_PIN N17 [get_ports cmv_lvds_clk_p]
 
 set_property PACKAGE_PIN N20 [get_ports cmv_lvds_outclk_p]
 set_property PACKAGE_PIN P20 [get_ports cmv_lvds_outclk_n]
