@@ -1480,16 +1480,16 @@ begin
     -- LVDS Input and Deserializer
     --------------------------------------------------------------------
 
-  /*  OBUFDS_inst : OBUFDS
-	generic map (
-	    IOSTANDARD => "LVDS_25",
-	    SLEW => "SLOW" )
-	port map (
-	    O => cmv_lvds_clk_p,
-	    OB => cmv_lvds_clk_n,
-	    I => cmv_lvds_clk );
+    --OBUFDS_inst : OBUFDS
+	--generic map (
+	    --IOSTANDARD => "LVDS_25",
+	    --SLEW => "SLOW" )
+	--port map (
+	    --O => cmv_lvds_clk_p,
+	    --OB => cmv_lvds_clk_n,
+	    --I => cmv_lvds_clk );
 
-    IBUFDS_inst : IBUFGDS_DIFF_OUT
+  /*  IBUFDS_inst : IBUFGDS_DIFF_OUT
 	generic map (
 	    DIFF_TERM => TRUE,
 	    IBUF_LOW_PWR => TRUE,
