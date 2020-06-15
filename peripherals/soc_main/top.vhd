@@ -1568,8 +1568,8 @@ begin
 	    par_clk	  => serdes_clk,	-- in
 	    par_enable	  => par_enable,	-- out
 	    par_data	  => par_data,		-- out
-            count_enable  => count_enable,   --in
-            counter_check => counter_check,  --out
+            count_enable  => count_enable,      -- in
+            counter_check => counter_check,     -- out
 	    --
 	    bitslip	  => serdes_bitslip(CHANNELS downto 0) );
 
@@ -2544,7 +2544,7 @@ begin
 	    OREG_SIZE => OMAT_SIZE,
 	    IREG_SIZE => IMAT_SIZE,
             INITIAL_VALUE => 
-            (others => (others =>'0') ))
+            (others => (others =>'0')) )
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(2),
 	    s_axi_areset_n => m_axi1a_areset_n(2),

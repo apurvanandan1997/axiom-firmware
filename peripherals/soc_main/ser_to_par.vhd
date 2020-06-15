@@ -64,10 +64,10 @@ architecture RTL of ser_to_par is
     signal test           : par12_a(CHANNELS-1 downto 0);
     signal counter        : std_logic_vector(11 downto 0);
     signal ctrl_in        : std_logic_vector(11 downto 0);
-    constant testpattern1 : std_logic_vector(11 downto 0):="111111111111";
-    constant testpattern2 : std_logic_vector(11 downto 0):="111100000000";   --F00 (hex)
-    constant testpattern3 : std_logic_vector(11 downto 0) :="111000000000";  --E00 (hex)
-    signal fval_count     : std_logic_vector(5 downto 0) :=(others => '0');  --FFF (hex)
+    constant testpattern1 : std_logic_vector(11 downto 0) := "111111111111";
+    constant testpattern2 : std_logic_vector(11 downto 0) := "111100000000";   -- F00 (hex)
+    constant testpattern3 : std_logic_vector(11 downto 0) := "111000000000";   -- E00 (hex)
+    signal fval_count     : std_logic_vector(5 downto 0) := (others => '0');   -- FFF (hex)
     
 begin
 
@@ -78,28 +78,28 @@ begin
 	   if count_enable ='1' then
 	       if counter = "000011111111" then
                     counter <= testpattern1;
-		    ctrl_in<= "000000000100";
-		    fval_count<=fval_count+1;
+		    ctrl_in <= "000000000100";
+		    fval_count <= fval_count+1;
 						  
 		elsif counter= testpattern1 then
 		    counter <= (others => '0');
-		    ctrl_in <="000000000111";
+		    ctrl_in <= "000000000111";
 							
-		elsif counter=  "000001111111" then 
+		elsif counter= "000001111111" then 
 		    counter <= testpattern2;
-		    ctrl_in<="000000000110";
+		    ctrl_in <= "000000000110";
 							
 		elsif counter= testpattern2 then
 		    counter <= "000010000000" ;
-		    ctrl_in <="000000000111";
+		    ctrl_in <= "000000000111";
 							
 		elsif fval_count="100000" then
-		    counter<= testpattern3;
-		    ctrl_in<="000000000000";
+		    counter <= testpattern3;
+		    ctrl_in <= "000000000000";
 				
                 else
                     counter <= counter + 1;
-		    ctrl_in<="000000000111";
+		    ctrl_in <= "000000000111";
 
                end if;   
            end if;
@@ -126,7 +126,7 @@ proc: process(serdes_clk, serdes_clkdiv)
 	    end if;
 
 	    if falling_edge(serdes_clk) then
-		par_enable<='0';
+		par_enable <='0';
 	    end if;
 	end process;
 			
