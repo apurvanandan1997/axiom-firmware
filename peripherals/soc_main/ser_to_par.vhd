@@ -50,7 +50,8 @@ entity ser_to_par is
 	par_data	: out par12_a (CHANNELS - 1 downto 0);
 	--
 	bitslip		: in  std_logic_vector (CHANNELS - 1 downto 0);
-	count_enable    : in std_logic
+	count_enable    : in std_logic;
+        counter_check   : out std_logic_vector(11 downto 0)
 	
     );
 
@@ -64,9 +65,9 @@ architecture RTL of ser_to_par is
     signal counter        : std_logic_vector(11 downto 0);
     signal ctrl_in        : std_logic_vector(11 downto 0);
     constant testpattern1 : std_logic_vector(11 downto 0):="111111111111";
-    constant testpattern2 : std_logic_vector(11 downto 0):="111100000000";
-    constant testpattern3 : std_logic_vector(11 downto 0) :="111000000000";
-    signal fval_count     : std_logic_vector(5 downto 0) :=(others => '0');
+    constant testpattern2 : std_logic_vector(11 downto 0):="111100000000";   --F00 (hex)
+    constant testpattern3 : std_logic_vector(11 downto 0) :="111000000000";  --E00 (hex)
+    signal fval_count     : std_logic_vector(5 downto 0) :=(others => '0');  --FFF (hex)
     
 begin
 
@@ -104,6 +105,8 @@ begin
            end if;
         end if;
  end process;
+
+counter_check <= counter;
 ----------------------------------------------------------------------
 --assigning fake data (test) to par_data 
 ----------------------------------------------------------------------

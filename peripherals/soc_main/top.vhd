@@ -296,6 +296,7 @@ architecture RTL of top is
     alias serdes_clkdiv : std_logic is word_clk;
 
     signal serdes_phase : std_logic;
+    signal counter_check : std_logic_vector(11 downto 0);
 
     signal serdes_bitslip : std_logic_vector (CHANNELS + 1 downto 0);
 
@@ -338,9 +339,7 @@ architecture RTL of top is
     constant REG_SPLIT : natural := 8;
     constant OREG_SIZE : natural := 16;
 
-   signal reg_oreg : reg32_a(0 to OREG_SIZE - 1) := 
-        ( 11 => "00000000000000000000000000110001" , 
-        others => "00000000000000000000000000000000");
+    signal reg_oreg : reg32_a(0 to OREG_SIZE - 1);
 
     alias waddr_buf0 : std_logic_vector (31 downto 0)
 	is reg_oreg(0)(31 downto 0);
@@ -379,7 +378,9 @@ architecture RTL of top is
 
     alias oreg_wblock : std_logic is reg_oreg(11)(4);
     alias oreg_wreset : std_logic is reg_oreg(11)(5);
+
     alias oreg_wload : std_logic is reg_oreg(11)(6);
+
     alias oreg_wswitch : std_logic is reg_oreg(11)(7);
 
     alias serdes_reset : std_logic is reg_oreg(11)(8);
@@ -431,7 +432,7 @@ architecture RTL of top is
 	is reg_oreg(15)(24 + 4 downto 24);
 
 
-    constant IREG_SIZE : natural := 8;
+    constant IREG_SIZE : natural := 9;
 
     signal led_done : std_logic;
 
@@ -934,7 +935,7 @@ architecture RTL of top is
     signal dmem_dout : std_logic_vector (8 downto 0);
 
 begin
-
+   
     --------------------------------------------------------------------
     -- PS7 Interface
     --------------------------------------------------------------------
@@ -1369,7 +1370,11 @@ begin
 	generic map (
 	    REG_SPLIT => REG_SPLIT,
 	    OREG_SIZE => OREG_SIZE,
-	    IREG_SIZE => IREG_SIZE )
+	    IREG_SIZE => IREG_SIZE,
+            INITIAL_VALUE => 
+            ( 11 => "00000000000000000000000000110001" , 
+              others => "00000000000000000000000000000000")
+         )
 	port map (
 	    s_axi_aclk => m_axi0a_aclk(1),
 	    s_axi_areset_n => m_axi0a_areset_n(1),
@@ -1400,7 +1405,7 @@ begin
 		   cseq_wload & cseq_wswitch &			-- 2bit
 		   cseq_wempty & cseq_frmreq &			-- 2bit
 		   cseq_flip & cseq_switch & x"000000";		-- 18bit
-		   
+    reg_ireg(8) <= "00000000000000000000" & counter_check;	-- 12bit	   
 
     --------------------------------------------------------------------
     -- Delay Control
@@ -1564,6 +1569,7 @@ begin
 	    par_enable	  => par_enable,	-- out
 	    par_data	  => par_data,		-- out
             count_enable  => count_enable,   --in
+            counter_check => counter_check,  --out
 	    --
 	    bitslip	  => serdes_bitslip(CHANNELS downto 0) );
 
@@ -2476,7 +2482,10 @@ begin
 	generic map (
 	    REG_SPLIT => SCN_SPLIT,
 	    OREG_SIZE => OSCN_SIZE,
-	    IREG_SIZE => ISCN_SIZE )
+	    IREG_SIZE => ISCN_SIZE,
+            INITIAL_VALUE => 
+            (others => (others =>'0')) )
+            
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(0),
 	    s_axi_areset_n => m_axi1a_areset_n(0),
@@ -2501,7 +2510,9 @@ begin
 	generic map (
 	    REG_SPLIT => GEN_SPLIT,
 	    OREG_SIZE => OGEN_SIZE,
-	    IREG_SIZE => IGEN_SIZE )
+	    IREG_SIZE => IGEN_SIZE,
+            INITIAL_VALUE => 
+            (others => (others =>'0')) )
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(1),
 	    s_axi_areset_n => m_axi1a_areset_n(1),
@@ -2531,7 +2542,9 @@ begin
 	generic map (
 	    REG_SPLIT => MAT_SPLIT,
 	    OREG_SIZE => OMAT_SIZE,
-	    IREG_SIZE => IMAT_SIZE )
+	    IREG_SIZE => IMAT_SIZE,
+            INITIAL_VALUE => 
+            (others => (others =>'0') ))
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(2),
 	    s_axi_areset_n => m_axi1a_areset_n(2),
