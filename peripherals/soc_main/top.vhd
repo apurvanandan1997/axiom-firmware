@@ -339,8 +339,8 @@ architecture RTL of top is
     constant OREG_SIZE : natural := 16;
 
    signal reg_oreg : reg32_a(0 to OREG_SIZE - 1) := 
-       ( 11 => "00000000000000000000000000110001" , 
-       others => "00000000000000000000000000000000");
+        ( 11 => "00000000000000000000000000110001" , 
+        others => "00000000000000000000000000000000");
 
     alias waddr_buf0 : std_logic_vector (31 downto 0)
 	is reg_oreg(0)(31 downto 0);
