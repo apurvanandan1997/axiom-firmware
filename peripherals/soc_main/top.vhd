@@ -1371,11 +1371,7 @@ begin
 	    REG_SPLIT => REG_SPLIT,
 	    OREG_SIZE => OREG_SIZE,
 	    IREG_SIZE => IREG_SIZE,
-            INITIAL_VALUE => 
-            ( 11 => "00000000000000000000000000110001" , 
-              others => "00000000000000000000000000000000")
-            )
-
+        INITIAL_VALUE => (11 => x"00000031" , others => x"00000000"))
 	port map (
 	    s_axi_aclk => m_axi0a_aclk(1),
 	    s_axi_areset_n => m_axi0a_areset_n(1),
@@ -1442,7 +1438,7 @@ begin
 	    --
 	    match => par_match,			-- in
 	    mismatch => par_mismatch,		-- in
-	    bitslip => serdes_bitslip );	*/-- out
+	    bitslip => serdes_bitslip );	-- out*/
 
     --------------------------------------------------------------------
     -- BRAM LUT Register File (Linearization)
@@ -1569,10 +1565,10 @@ begin
 	    par_clk	  => serdes_clk,	-- in
 	    par_enable	  => par_enable,	-- out
 	    par_data	  => par_data,		-- out
-            count_enable  => count_enable,      -- in
-            counter_check => counter_check,     -- out
+        count_enable  => count_enable,      -- in
+        counter_check => counter_check,     -- out
 	    --
-	    bitslip	  => serdes_bitslip(CHANNELS downto 0) );
+	    bitslip	  => serdes_bitslip(CHANNELS downto 0));
 
     phase_proc : process (serdes_clkdiv)
 	variable phase_v : std_logic := '0';
@@ -2484,9 +2480,7 @@ begin
 	    REG_SPLIT => SCN_SPLIT,
 	    OREG_SIZE => OSCN_SIZE,
 	    IREG_SIZE => ISCN_SIZE,
-            INITIAL_VALUE => 
-            (others => (others =>'0')) )
-            
+        INITIAL_VALUE => (others => (others => '0')))     
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(0),
 	    s_axi_areset_n => m_axi1a_areset_n(0),
@@ -2512,9 +2506,7 @@ begin
 	    REG_SPLIT => GEN_SPLIT,
 	    OREG_SIZE => OGEN_SIZE,
 	    IREG_SIZE => IGEN_SIZE,
-            INITIAL_VALUE => 
-            (others => (others =>'0')) )
-
+        INITIAL_VALUE => (others => (others => '0')))
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(1),
 	    s_axi_areset_n => m_axi1a_areset_n(1),
@@ -2545,9 +2537,7 @@ begin
 	    REG_SPLIT => MAT_SPLIT,
 	    OREG_SIZE => OMAT_SIZE,
 	    IREG_SIZE => IMAT_SIZE,
-            INITIAL_VALUE => 
-            (others => (others =>'0')) )
-
+        INITIAL_VALUE => (others => (others => '0')))
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(2),
 	    s_axi_areset_n => m_axi1a_areset_n(2),
