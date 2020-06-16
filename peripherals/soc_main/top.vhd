@@ -391,7 +391,7 @@ architecture RTL of top is
 
     alias writer_enable : std_logic_vector (3 downto 0)
 	is reg_oreg(11)(19 downto 16);
-
+    
     alias rcn_clip : std_logic_vector (1 downto 0)
 	is reg_oreg(11)(21 downto 20);
 
@@ -935,7 +935,7 @@ architecture RTL of top is
     signal dmem_dout : std_logic_vector (8 downto 0);
 
 begin
-   
+
     --------------------------------------------------------------------
     -- PS7 Interface
     --------------------------------------------------------------------
@@ -1374,7 +1374,8 @@ begin
             INITIAL_VALUE => 
             ( 11 => "00000000000000000000000000110001" , 
               others => "00000000000000000000000000000000")
-         )
+            )
+
 	port map (
 	    s_axi_aclk => m_axi0a_aclk(1),
 	    s_axi_areset_n => m_axi0a_areset_n(1),
@@ -2513,6 +2514,7 @@ begin
 	    IREG_SIZE => IGEN_SIZE,
             INITIAL_VALUE => 
             (others => (others =>'0')) )
+
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(1),
 	    s_axi_areset_n => m_axi1a_areset_n(1),
@@ -2545,6 +2547,7 @@ begin
 	    IREG_SIZE => IMAT_SIZE,
             INITIAL_VALUE => 
             (others => (others =>'0')) )
+
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(2),
 	    s_axi_areset_n => m_axi1a_areset_n(2),
