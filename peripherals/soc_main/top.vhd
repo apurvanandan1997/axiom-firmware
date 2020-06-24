@@ -432,7 +432,7 @@ architecture RTL of top is
 	is reg_oreg(15)(24 + 4 downto 24);
 
 
-    constant IREG_SIZE : natural := 9;
+    constant IREG_SIZE : natural := 12;
 
     signal led_done : std_logic;
 
@@ -1371,7 +1371,11 @@ begin
 	    REG_SPLIT => REG_SPLIT,
 	    OREG_SIZE => OREG_SIZE,
 	    IREG_SIZE => IREG_SIZE,
-        INITIAL_VALUE => (11 => x"00000031" , others => x"00000000"))
+            INITIAL_VALUE => 
+            ( 11 => "00000000000000000000000000110001" , 
+              others => "00000000000000000000000000000000")
+            )
+
 	port map (
 	    s_axi_aclk => m_axi0a_aclk(1),
 	    s_axi_areset_n => m_axi0a_areset_n(1),
@@ -1402,7 +1406,11 @@ begin
 		   cseq_wload & cseq_wswitch &			-- 2bit
 		   cseq_wempty & cseq_frmreq &			-- 2bit
 		   cseq_flip & cseq_switch & x"000000";		-- 18bit
-    reg_ireg(8) <= "00000000000000000000" & counter_check;	-- 12bit	   
+    reg_ireg(8) <= "00000000" & par_data_o(0)& par_data_o(1);	-- 12bit	
+    reg_ireg(9) <= "00000000" & par_data_o(2) & par_data(3); 
+    reg_ireg(10)<= "00000000" & par_data_e(0) & par_data_e(1);
+    reg_ireg(11) <= "00000000" & par_data_e(2) & par_data_e(3);
+    
 
     --------------------------------------------------------------------
     -- Delay Control
@@ -1438,7 +1446,7 @@ begin
 	    --
 	    match => par_match,			-- in
 	    mismatch => par_mismatch,		-- in
-	    bitslip => serdes_bitslip );	-- out*/
+	    bitslip => serdes_bitslip );	*/-- out
 
     --------------------------------------------------------------------
     -- BRAM LUT Register File (Linearization)
@@ -1565,10 +1573,10 @@ begin
 	    par_clk	  => serdes_clk,	-- in
 	    par_enable	  => par_enable,	-- out
 	    par_data	  => par_data,		-- out
-        count_enable  => count_enable,      -- in
-        counter_check => counter_check,     -- out
+            count_enable  => count_enable,      -- inbitslip
+            counter_check => counter_check,     -- out
 	    --
-	    bitslip	  => serdes_bitslip(CHANNELS downto 0));
+	    bitslip	  => serdes_bitslip(CHANNELS downto 0) );
 
     phase_proc : process (serdes_clkdiv)
 	variable phase_v : std_logic := '0';
@@ -1576,9 +1584,9 @@ begin
 	serdes_phase <= phase_v;
 
 	if rising_edge(serdes_clkdiv) then
-	    if serdes_bitslip(CHANNELS + 1) = '0' then
+	    --if serdes_bitslip(CHANNELS + 1) = '0' then
 		phase_v := not phase_v;
-	    end if;
+	    --end if;
 	end if;
     end process;
 
@@ -2480,7 +2488,9 @@ begin
 	    REG_SPLIT => SCN_SPLIT,
 	    OREG_SIZE => OSCN_SIZE,
 	    IREG_SIZE => ISCN_SIZE,
-        INITIAL_VALUE => (others => (others => '0')))     
+            INITIAL_VALUE => 
+            (others => (others =>'0')) )
+            
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(0),
 	    s_axi_areset_n => m_axi1a_areset_n(0),
@@ -2506,7 +2516,9 @@ begin
 	    REG_SPLIT => GEN_SPLIT,
 	    OREG_SIZE => OGEN_SIZE,
 	    IREG_SIZE => IGEN_SIZE,
-        INITIAL_VALUE => (others => (others => '0')))
+            INITIAL_VALUE => 
+            (others => (others =>'0')) )
+
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(1),
 	    s_axi_areset_n => m_axi1a_areset_n(1),
@@ -2537,7 +2549,9 @@ begin
 	    REG_SPLIT => MAT_SPLIT,
 	    OREG_SIZE => OMAT_SIZE,
 	    IREG_SIZE => IMAT_SIZE,
-        INITIAL_VALUE => (others => (others => '0')))
+            INITIAL_VALUE => 
+            (others => (others =>'0')) )
+
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(2),
 	    s_axi_areset_n => m_axi1a_areset_n(2),
