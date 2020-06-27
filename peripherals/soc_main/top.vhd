@@ -1406,10 +1406,7 @@ begin
 		   cseq_wload & cseq_wswitch &			-- 2bit
 		   cseq_wempty & cseq_frmreq &			-- 2bit
 		   cseq_flip & cseq_switch & x"000000";		-- 18bit
-    reg_ireg(8) <= "00000000" & par_data_o(0)& par_data_o(1);	-- 12bit	
-    reg_ireg(9) <= "00000000" & par_data_o(2) & par_data(3); 
-    reg_ireg(10)<= "00000000" & par_data_e(0) & par_data_e(1);
-    reg_ireg(11) <= "00000000" & par_data_e(2) & par_data_e(3);
+    
     
 
     --------------------------------------------------------------------

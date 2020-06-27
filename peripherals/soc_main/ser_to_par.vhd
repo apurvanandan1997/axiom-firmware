@@ -56,18 +56,20 @@ entity ser_to_par is
 	);
 
 end entity ser_to_par;
-
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+-- data_dval_low, data_lval_low and data_fval_low are used to set the data value to some constant testpattern i.e representing TP1, TP2 as in cmv sesnsor
+---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 architecture RTL of ser_to_par is
 
 	attribute KEEP_HIERARCHY of RTL : architecture is "TRUE";
 	signal test                     : par12_a(CHANNELS - 1 downto 0);
-	signal counter                  : std_logic_vector(11 downto 0) := "001101101101"; --36D initial counter value
-	signal ctrl_in                  : std_logic_vector(11 downto 0) := "000000000000";
-	constant testpattern1           : std_logic_vector(11 downto 0) := "011100000000"; --700 counter value when one lvds pin outputs 128 pixels 
-	constant testpattern2           : std_logic_vector(11 downto 0) := "001101101101"; --36D counter value when one lvds pin outputs 256 pixels
-	constant testpattern3           : std_logic_vector(11 downto 0) := "011000000000"; --600 counter value when required frame is obtained
-	signal lval_count               : std_logic_vector(5 downto 0)  := (others => '0');
+	signal counter                  : std_logic_vector(11 downto 0) := x"EEE";
+	signal ctrl_in                  : std_logic_vector(11 downto 0) := (others => '0');
+	constant data_dval_low          : std_logic_vector(11 downto 0) := x"FFF";
+	constant data_lval_low          : std_logic_vector(11 downto 0) := x"EEE";
+	constant data_fval_low          : std_logic_vector(11 downto 0) := x"DDD";
+	signal lval_count               : std_logic_vector(1 downto 0)  := (others => '0');  --used to indicate number of rows
 	signal counter_word             : std_logic_vector(2 downto 0)  := (others => '0');
 
 begin
@@ -77,30 +79,30 @@ begin
 	begin
 		if rising_edge(serdes_clkdiv) and serdes_phase = '1' then
 			if count_enable ='1' then
-				if counter= "000001111111" then
-					counter <= testpattern1;
-					ctrl_in <= "000000000110";
+				if counter= x"07F" then
+					counter <= data_dval_low;
+					ctrl_in <= x"007";
 
-				elsif counter= testpattern1 then
-					counter <= "000010000000" ;
-					ctrl_in <= "000000000111";
+				elsif counter= data_dval_low then
+					counter <= x"800" ;
+					ctrl_in <= x"007";
 
-				elsif counter = "000011111111" then
-					counter    <= testpattern2;
-					ctrl_in    <= "000000000100";
+				elsif counter = x"0FF" then
+					counter    <= data_lval_low;
+					ctrl_in    <= x"004";
 					lval_count <= lval_count+1;
 
-				elsif counter= testpattern2 then
+				elsif counter= data_lval_low then
 					counter <= (others => '0');
-					ctrl_in <= "000000000111";
+					ctrl_in <= x"007";
 
-				elsif lval_count="100000" then
-					counter <= testpattern3;
-					ctrl_in <= "000000000000";
+				elsif lval_count="10" then
+					counter <= data_fval_low;
+					ctrl_in <= x"000";
 
 				else
 					counter <= counter + 1;
-					ctrl_in <= "000000000111";
+					ctrl_in <= x"000";
 
 				end if;
 			end if;
@@ -113,16 +115,20 @@ begin
 	--assigning fake data (test) to par_data 
 	----------------------------------------------------------------------
 
-	GEN_PAT0 : for I in (CHANNELS-1)/2 - 1 downto 0 generate
-		test(I) <= counter + "001000000000";
+
+	GEN_PAT0 : for I in (CHANNELS - 2) downto 0 generate
+		test(I)(11 downto 8) <= x"9"  when (I/2 = 7 and counter(7 downto 0 ) = x"FF") else std_logic_vector(to_unsigned(I/2,4));
+		test(I)(7 downto 0 ) <= x"99" when (I/2 = 7 and counter(7 downto 0 ) = x"FF") else counter(7 downto 0 ) ;
 	end generate;
 
 	GEN_PAT1 : for I in CHANNELS - 2 downto (CHANNELS-1)/2 generate
-		test(I) <= counter + "010000000000";
+		test(I)(11 downto 8) <= x"6"  when (I/2 = 15 and counter(7 downto 0 ) = x"FF") else std_logic_vector(to_unsigned(I/2,4));
+		test(I)(7 downto 0 ) <= x"66" when (I/2 = 15 and counter(7 downto 0 ) = x"FF") else counter(7 downto 0 ) ;
 	end generate;
 
 	test(CHANNELS-1) <= ctrl_in;
 	par_data         <= test;
+
 
 
 	push_proc : process (par_clk)
