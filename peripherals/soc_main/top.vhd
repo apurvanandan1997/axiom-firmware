@@ -296,8 +296,6 @@ architecture RTL of top is
     alias serdes_clkdiv : std_logic is word_clk;
 
     signal serdes_phase : std_logic;
-    signal counter_check : std_logic_vector(11 downto 0);
-
     signal serdes_bitslip : std_logic_vector (CHANNELS + 1 downto 0);
 
     --------------------------------------------------------------------
@@ -842,9 +840,6 @@ architecture RTL of top is
     signal event_cr : std_logic_vector (11 downto 0);
     signal event_cg : std_logic_vector (11 downto 0);
     signal event_cb : std_logic_vector (11 downto 0);
-
-
-
 
     --------------------------------------------------------------------
     -- Capture Sequencer Signals
@@ -1405,8 +1400,6 @@ begin
 		   cseq_wempty & cseq_frmreq &			-- 2bit
 		   cseq_flip & cseq_switch & x"000000";		-- 18bit
     
-    
-
     --------------------------------------------------------------------
     -- Delay Control
     --------------------------------------------------------------------
@@ -1487,16 +1480,16 @@ begin
     -- LVDS Input and Deserializer
     --------------------------------------------------------------------
 
-    --OBUFDS_inst : OBUFDS
-	--generic map (
-	    --IOSTANDARD => "LVDS_25",
-	    --SLEW => "SLOW" )
-	--port map (
-	    --O => cmv_lvds_clk_p,
-	    --OB => cmv_lvds_clk_n,
-	    --I => cmv_lvds_clk );
+  /*  OBUFDS_inst : OBUFDS
+	generic map (
+	    IOSTANDARD => "LVDS_25",
+	    SLEW => "SLOW" )
+	port map (
+	    O => cmv_lvds_clk_p,
+	    OB => cmv_lvds_clk_n,
+	    I => cmv_lvds_clk );
 
-  /*  IBUFDS_inst : IBUFGDS_DIFF_OUT
+    IBUFDS_inst : IBUFGDS_DIFF_OUT
 	generic map (
 	    DIFF_TERM => TRUE,
 	    IBUF_LOW_PWR => TRUE,
@@ -1568,9 +1561,7 @@ begin
             par_clk       => serdes_clk,    -- in
             par_enable    => par_enable,    -- out
             par_data      => par_data,      -- out
-            count_enable  => count_enable,  -- inbitslip
-            counter_check => counter_check, -- out
-                                        --
+            count_enable  => count_enable,  -- in                           --
             bitslip => serdes_bitslip(CHANNELS downto 0) );
 
     phase_proc : process (serdes_clkdiv)
