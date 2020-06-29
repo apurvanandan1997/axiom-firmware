@@ -116,11 +116,6 @@ begin
         par_data_buf(I)(7 downto 0 ) <=  counter(7 downto 0 ) ;
     end generate;
 
-    GEN_PAT1 : for I in CHANNELS - 2 downto (CHANNELS-1)/2 generate
-        par_data_buf(I)(11 downto 8) <= std_logic_vector(to_unsigned(I/2,4));
-        par_data_buf(I)(7 downto 0 ) <= counter(7 downto 0 ) ;
-    end generate;
-
     par_data_buf(CHANNELS-1) <= ctrl_in;
     par_data         <= par_data_buf;
 
