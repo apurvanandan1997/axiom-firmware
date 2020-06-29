@@ -112,19 +112,15 @@ begin
     ----------------------------------------------------------------------
 
     GEN_PAT0 : for I in (CHANNELS - 2) downto 0 generate
-        par_data_buf(I)(11 downto 8) <= x"9"  when (I/2 = 7 and counter(7 downto 0 ) = x"FF") 
-                           else std_logic_vector(to_unsigned(I/2,4));
+        par_data_buf(I)(11 downto 8) <=  std_logic_vector(to_unsigned(I/2,4));
                            
-        par_data_buf(I)(7 downto 0 ) <= x"99" when (I/2 = 7 and counter(7 downto 0 ) = x"FF") 
-                           else counter(7 downto 0 ) ;
+        par_data_buf(I)(7 downto 0 ) <=  counter(7 downto 0 ) ;
     end generate;
 
     GEN_PAT1 : for I in CHANNELS - 2 downto (CHANNELS-1)/2 generate
-        par_data_buf(I)(11 downto 8) <= x"6"  when (I/2 = 15 and counter(7 downto 0 ) = x"FF") 
-                           else std_logic_vector(to_unsigned(I/2,4));
+        par_data_buf(I)(11 downto 8) <= std_logic_vector(to_unsigned(I/2,4));
                            
-        par_data_buf(I)(7 downto 0 ) <= x"66" when (I/2 = 15 and counter(7 downto 0 ) = x"FF") 
-                           else counter(7 downto 0 ) ;
+        par_data_buf(I)(7 downto 0 ) <= counter(7 downto 0 ) ;
     end generate;
 
     par_data_buf(CHANNELS-1) <= ctrl_in;
