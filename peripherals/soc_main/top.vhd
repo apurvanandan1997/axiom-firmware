@@ -1367,15 +1367,13 @@ begin
     --------------------------------------------------------------------
 
     reg_file_inst0 : entity work.reg_file
-	generic map (
-	    REG_SPLIT => REG_SPLIT,
-	    OREG_SIZE => OREG_SIZE,
-	    IREG_SIZE => IREG_SIZE,
-            INITIAL_VALUE => 
-                ( 11 => "00000000000000000000000000110001" , 
-                  others => "00000000000000000000000000000000")
-            )
-
+    generic map (
+            REG_SPLIT     => REG_SPLIT,
+            OREG_SIZE     => OREG_SIZE,
+            IREG_SIZE     => IREG_SIZE,
+            INITIAL_VALUE =>
+            ( 11          => x"00000031" , others => (others => '0')) )
+			  
 	port map (
 	    s_axi_aclk => m_axi0a_aclk(1),
 	    s_axi_areset_n => m_axi0a_areset_n(1),
@@ -1557,23 +1555,23 @@ begin
     cmv_outclk <= not idelay_out(CHANNELS + 1); */
 
     ser_to_par_inst : entity work.ser_to_par
-	generic map (
-	    CHANNELS => CHANNELS + 1 )
-	port map (
-	    serdes_clk	  => serdes_clk,	-- in
-	    serdes_clkdiv => serdes_clkdiv,	-- in
-	    serdes_phase  => serdes_phase,	-- in
-	    serdes_rst	  => serdes_reset,	-- in
-	    --
-	    ser_data	  => idelay_out(CHANNELS downto 0),
-	    --
-	    par_clk	  => serdes_clk,	-- in
-	    par_enable	  => par_enable,	-- out
-	    par_data	  => par_data,		-- out
-            count_enable  => count_enable,      -- inbitslip
-            counter_check => counter_check,     -- out
-	    --
-	    bitslip	  => serdes_bitslip(CHANNELS downto 0) );
+        generic map (
+            CHANNELS => CHANNELS + 1 )
+        port map (
+            serdes_clk    => serdes_clk,    -- in
+            serdes_clkdiv => serdes_clkdiv, -- in
+            serdes_phase  => serdes_phase,  -- in
+            serdes_rst    => serdes_reset,  -- in
+                                        --
+            ser_data => idelay_out(CHANNELS downto 0),
+            --
+            par_clk       => serdes_clk,    -- in
+            par_enable    => par_enable,    -- out
+            par_data      => par_data,      -- out
+            count_enable  => count_enable,  -- inbitslip
+            counter_check => counter_check, -- out
+                                        --
+            bitslip => serdes_bitslip(CHANNELS downto 0) );
 
     phase_proc : process (serdes_clkdiv)
 	variable phase_v : std_logic := '0';
@@ -2480,13 +2478,7 @@ begin
     -- Scan Register File
     --------------------------------------------------------------------
 
-    reg_file_inst1 : entity work.reg_file
-	generic map (
-	    REG_SPLIT => SCN_SPLIT,
-	    OREG_SIZE => OSCN_SIZE,
-	    IREG_SIZE => ISCN_SIZE,
-            INITIAL_VALUE => 
-                (others => (others =>'0')) )
+   
             
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(0),
@@ -2508,14 +2500,14 @@ begin
     -- AddrGen Register File
     --------------------------------------------------------------------
 
-    reg_file_inst2 : entity work.reg_file
-	generic map (
-	    REG_SPLIT => GEN_SPLIT,
-	    OREG_SIZE => OGEN_SIZE,
-	    IREG_SIZE => IGEN_SIZE,
-            INITIAL_VALUE => 
-                (others => (others =>'0')) )
-
+    reg_file_inst1 : entity work.reg_file
+        generic map (
+            REG_SPLIT     => SCN_SPLIT,
+            OREG_SIZE     => OSCN_SIZE,
+            IREG_SIZE     => ISCN_SIZE,
+            INITIAL_VALUE =>
+            (others       => (others => '0')) )
+		
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(1),
 	    s_axi_areset_n => m_axi1a_areset_n(1),
@@ -2542,12 +2534,12 @@ begin
     --------------------------------------------------------------------
 
     reg_file_inst3 : entity work.reg_file
-	generic map (
-	    REG_SPLIT => MAT_SPLIT,
-	    OREG_SIZE => OMAT_SIZE,
-	    IREG_SIZE => IMAT_SIZE,
-            INITIAL_VALUE => 
-                (others => (others =>'0')) )
+    generic map (
+        REG_SPLIT => MAT_SPLIT,
+        OREG_SIZE => OMAT_SIZE,
+        IREG_SIZE => IMAT_SIZE,
+        INITIAL_VALUE => 
+        (others => (others =>'0')) )
 
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(2),
