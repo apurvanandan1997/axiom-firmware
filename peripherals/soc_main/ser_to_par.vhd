@@ -50,27 +50,25 @@ entity ser_to_par is
         par_data   : out par12_a (CHANNELS - 1 downto 0);
         --
         bitslip       : in  std_logic_vector (CHANNELS - 1 downto 0);
-        count_enable  : in  std_logic;
-        counter_check : out std_logic_vector(11 downto 0)
-
+        count_enable  : in  std_logic
     );
 
 end entity ser_to_par;
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
--- data_dval_low, data_lval_low and data_fval_low are used to set the data value to some constant testpattern i.e representing TP1, TP2 as in cmv sesnsor
+-- data_dval_low, data_lval_low and data_fval_low are used to set the data value to 
+-- some constant testpattern i.e representing TP1, TP2 as in cmv sesnsor
 ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 architecture RTL of ser_to_par is
 
     attribute KEEP_HIERARCHY of RTL : architecture is "TRUE";
-    signal test                     : par12_a(CHANNELS - 1 downto 0);
-    signal counter                  : std_logic_vector(11 downto 0) := x"EEE";
+    signal par_data_buf             : par12_a(CHANNELS - 1 downto 0);
     signal ctrl_in                  : std_logic_vector(11 downto 0) := (others => '0');
     constant data_dval_low          : std_logic_vector(11 downto 0) := x"FFF";
     constant data_lval_low          : std_logic_vector(11 downto 0) := x"EEE";
     constant data_fval_low          : std_logic_vector(11 downto 0) := x"DDD";
+    signal counter                  : std_logic_vector(11 downto 0) := data_dval_low;
     signal lval_count               : std_logic_vector(1 downto 0)  := (others => '0'); --used to indicate number of rows
-    signal counter_word             : std_logic_vector(2 downto 0)  := (others => '0');
 
 begin
 
@@ -90,13 +88,13 @@ begin
                 elsif counter = x"0FF" then
                     counter    <= data_lval_low;
                     ctrl_in    <= x"004";
-                    lval_count <= lval_count+1;
+                    lval_count <= lval_count + 1;
 
                 elsif counter= data_lval_low then
                     counter <= (others => '0');
                     ctrl_in <= x"007";
 
-                elsif lval_count="10" then
+                elsif lval_count = "10" then
                     counter <= data_fval_low;
                     ctrl_in <= x"000";
 
@@ -109,31 +107,28 @@ begin
         end if;
     end process;
 
-    counter_check <= counter;
-
     ----------------------------------------------------------------------
     --assigning fake data (test) to par_data 
     ----------------------------------------------------------------------
 
-
     GEN_PAT0 : for I in (CHANNELS - 2) downto 0 generate
-        test(I)(11 downto 8) <= x"9"  when (I/2 = 7 and counter(7 downto 0 ) = x"FF") 
+        par_data_buf(I)(11 downto 8) <= x"9"  when (I/2 = 7 and counter(7 downto 0 ) = x"FF") 
                            else std_logic_vector(to_unsigned(I/2,4));
                            
-        test(I)(7 downto 0 ) <= x"99" when (I/2 = 7 and counter(7 downto 0 ) = x"FF") 
+        par_data_buf(I)(7 downto 0 ) <= x"99" when (I/2 = 7 and counter(7 downto 0 ) = x"FF") 
                            else counter(7 downto 0 ) ;
     end generate;
 
     GEN_PAT1 : for I in CHANNELS - 2 downto (CHANNELS-1)/2 generate
-        test(I)(11 downto 8) <= x"6"  when (I/2 = 15 and counter(7 downto 0 ) = x"FF") 
+        par_data_buf(I)(11 downto 8) <= x"6"  when (I/2 = 15 and counter(7 downto 0 ) = x"FF") 
                            else std_logic_vector(to_unsigned(I/2,4));
                            
-        test(I)(7 downto 0 ) <= x"66" when (I/2 = 15 and counter(7 downto 0 ) = x"FF") 
+        par_data_buf(I)(7 downto 0 ) <= x"66" when (I/2 = 15 and counter(7 downto 0 ) = x"FF") 
                            else counter(7 downto 0 ) ;
     end generate;
 
-    test(CHANNELS-1) <= ctrl_in;
-    par_data         <= test;
+    par_data_buf(CHANNELS-1) <= ctrl_in;
+    par_data         <= par_data_buf;
 
     push_proc : process (par_clk)
         variable phase_d_v : std_logic;
