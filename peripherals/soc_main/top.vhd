@@ -1366,8 +1366,8 @@ begin
             REG_SPLIT     => REG_SPLIT,
             OREG_SIZE     => OREG_SIZE,
             IREG_SIZE     => IREG_SIZE,
-            INITIAL_VALUE =>
-            ( 11          => x"00000031" , others => (others => '0')) )
+            INITIAL_VALUE => 
+	    (11  => x"00000031", others => (others => '0')))
 			  
 	port map (
 	    s_axi_aclk => m_axi0a_aclk(1),
