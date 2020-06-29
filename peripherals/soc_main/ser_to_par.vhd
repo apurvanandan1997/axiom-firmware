@@ -17,7 +17,6 @@ package par_array_pkg is
 
 end par_array_pkg;
 
-
 library IEEE;
 use IEEE.std_logic_1164.ALL;
 use IEEE.numeric_std.ALL;
