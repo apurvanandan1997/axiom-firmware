@@ -2496,8 +2496,7 @@ begin
             REG_SPLIT     => SCN_SPLIT,
             OREG_SIZE     => OSCN_SIZE,
             IREG_SIZE     => ISCN_SIZE,
-            INITIAL_VALUE =>
-            (others       => (others => '0')) )
+            INITIAL_VALUE => (others => (others => '0')))
 		
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(1),
@@ -2529,8 +2528,7 @@ begin
         REG_SPLIT => MAT_SPLIT,
         OREG_SIZE => OMAT_SIZE,
         IREG_SIZE => IMAT_SIZE,
-        INITIAL_VALUE => 
-        (others => (others =>'0')) )
+        INITIAL_VALUE => (others => (others =>'0')))
 
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(2),
