@@ -59,8 +59,8 @@ entity top is
 	cmv_t_exp1 : out std_ulogic;
 	cmv_t_exp2 : out std_ulogic;
 	--
-	--cmv_lvds_clk_p : out std_logic;
-	--cmv_lvds_clk_n : out std_logic;
+	-- cmv_lvds_clk_p : out std_logic;
+	-- cmv_lvds_clk_n : out std_logic;
 	--
 	cmv_lvds_outclk_p : in std_logic;
 	cmv_lvds_outclk_n : in std_logic;
@@ -1363,12 +1363,12 @@ begin
 
     reg_file_inst0 : entity work.reg_file
     generic map (
-            REG_SPLIT     => REG_SPLIT,
-            OREG_SIZE     => OREG_SIZE,
-            IREG_SIZE     => IREG_SIZE,
-            INITIAL_VALUE => 
-	    (11  => x"00000031", others => (others => '0')))
-			  
+        REG_SPLIT     => REG_SPLIT,
+        OREG_SIZE     => OREG_SIZE,
+        IREG_SIZE     => IREG_SIZE,
+        INITIAL_VALUE =>
+            (11 => x"00000031", others => (others => '0')) )
+
 	port map (
 	    s_axi_aclk => m_axi0a_aclk(1),
 	    s_axi_areset_n => m_axi0a_areset_n(1),
@@ -1544,7 +1544,7 @@ begin
     idelay_in(17 downto 0) <= idelay_in_p(17 downto 0);
     idelay_in(18) <= idelay_in_n(18);
     idelay_in(CHANNELS downto 19) <= idelay_in_p(CHANNELS downto 19);
-    idelay_in(CHANNELS + 1) <= not(cmv_lvds_clk);
+    idelay_in(CHANNELS + 1) <= idelay_in_n(CHANNELS + 1);
     cmv_outclk <= not idelay_out(CHANNELS + 1); */
 
     ser_to_par_inst : entity work.ser_to_par
@@ -1570,9 +1570,9 @@ begin
 	serdes_phase <= phase_v;
 
 	if rising_edge(serdes_clkdiv) then
-	    --if serdes_bitslip(CHANNELS + 1) = '0' then
-		phase_v := not phase_v;
-	    --end if;
+	    -- if serdes_bitslip(CHANNELS + 1) = '0' then
+	    phase_v := not phase_v;
+	    -- end if;
 	end if;
     end process;
 
@@ -2469,8 +2469,12 @@ begin
     -- Scan Register File
     --------------------------------------------------------------------
 
-   
-            
+    reg_file_inst1 : entity work.reg_file   
+        generic map (   
+            REG_SPLIT => SCN_SPLIT, 
+            OREG_SIZE => OSCN_SIZE, 
+            IREG_SIZE => ISCN_SIZE, 
+            INITIAL_VALUE => (others => (others => '0')) )            
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(0),
 	    s_axi_areset_n => m_axi1a_areset_n(0),
@@ -2496,8 +2500,7 @@ begin
             REG_SPLIT     => SCN_SPLIT,
             OREG_SIZE     => OSCN_SIZE,
             IREG_SIZE     => ISCN_SIZE,
-            INITIAL_VALUE => (others => (others => '0')))
-		
+            INITIAL_VALUE => (others => (others => '0')) )
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(1),
 	    s_axi_areset_n => m_axi1a_areset_n(1),
@@ -2524,12 +2527,11 @@ begin
     --------------------------------------------------------------------
 
     reg_file_inst3 : entity work.reg_file
-    generic map (
-        REG_SPLIT => MAT_SPLIT,
-        OREG_SIZE => OMAT_SIZE,
-        IREG_SIZE => IMAT_SIZE,
-        INITIAL_VALUE => (others => (others =>'0')))
-
+        generic map (
+            REG_SPLIT => MAT_SPLIT,
+            OREG_SIZE => OMAT_SIZE,
+            IREG_SIZE => IMAT_SIZE,
+            INITIAL_VALUE => (others => (others =>'0')) )
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(2),
 	    s_axi_areset_n => m_axi1a_areset_n(2),
