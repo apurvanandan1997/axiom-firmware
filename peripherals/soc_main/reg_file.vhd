@@ -50,10 +50,10 @@ entity reg_file is
 	REG_SPLIT : natural := 4;
 	OREG_SIZE : natural := 8;
 	IREG_SIZE : natural := 8;
-	INITIAL_VALUE : reg32_a(OREG_SIZE-1 to 0) 
+	INITIAL_VALUE : reg32_a(OREG_SIZE - 1 to 0)
         := (others => (others => '0'))
     );
-    
+
     port (
 	s_axi_aclk : in std_logic;
 	s_axi_areset_n : in std_logic;
