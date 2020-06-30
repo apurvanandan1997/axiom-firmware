@@ -118,7 +118,7 @@ begin
 
                 else
                     counter <= counter + '1';
-                    ctrl_in <= x"000";
+                    ctrl_in <= x"007";
 
                 end if;
             end if;
