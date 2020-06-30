@@ -318,4 +318,3 @@ set_property LOC PLLE2_ADV_X1Y2 [get_cells lvds_pll_inst/pll_inst]
 
 # set_property LOC PLLE2_ADV_X1Y1 [get_cells lvds_pll_inst/lvds_pll_inst]
 # set_property LOC MMCME2_ADV_X1Y1 [get_cells lvds_pll_inst/lvds_mmcm_inst]
-
