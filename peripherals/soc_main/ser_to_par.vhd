@@ -84,7 +84,7 @@ architecture RTL of ser_to_par is
     signal par_data_buf : par12_a(CHANNELS - 1 downto 0);
     signal lval_count   : std_logic_vector(1 downto 0) := (others => '0');
     signal ctrl_in : std_logic_vector(11 downto 0) := (others => '0');
-    signal counter : std_logic_vector(11 downto 0) := data_dval_low;
+    signal counter : std_logic_vector(11 downto 0) := data_lval_low;
 
 begin
 
