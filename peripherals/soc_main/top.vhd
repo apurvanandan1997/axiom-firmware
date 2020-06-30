@@ -2495,11 +2495,11 @@ begin
     -- AddrGen Register File
     --------------------------------------------------------------------
 
-    reg_file_inst1 : entity work.reg_file
-        generic map (
-            REG_SPLIT     => SCN_SPLIT,
-            OREG_SIZE     => OSCN_SIZE,
-            IREG_SIZE     => ISCN_SIZE,
+     reg_file_inst2 : entity work.reg_file
+	generic map (
+	    REG_SPLIT => GEN_SPLIT,
+	    OREG_SIZE => OGEN_SIZE,
+	    IREG_SIZE => IGEN_SIZE,
             INITIAL_VALUE => (others => (others => '0')) )
 	port map (
 	    s_axi_aclk => m_axi1a_aclk(1),
