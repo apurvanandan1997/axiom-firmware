@@ -97,7 +97,7 @@ begin
             if count_enable = '1' and serdes_phase = '1' then
                 if counter = x"07F" then
                     counter <= data_dval_low;
-                    ctrl_in <= x"007";
+                    ctrl_in <= x"006";
 
                 elsif counter = data_dval_low then
                     counter <= x"800";
