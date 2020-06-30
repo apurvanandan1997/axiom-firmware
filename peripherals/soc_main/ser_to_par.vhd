@@ -100,7 +100,7 @@ begin
                     ctrl_in <= x"006";
 
                 elsif counter = data_dval_low then
-                    counter <= x"800";
+                    counter <= x"080";
                     ctrl_in <= x"007";
 
                 elsif counter = x"0FF" then
